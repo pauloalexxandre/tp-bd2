@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Sensores {
+    sensor_id           Int      @id @default(autoincrement())
+    sala_id             Int
+    sensor_name         String   @db.VarChar(255)
+    sensor_type         String?  @db.VarChar(100)
+    sensor_model        String?  @db.VarChar(100)
+    current_value       Float?
+    unit_of_measure     String?  @db.VarChar(50)
+    timestamp           DateTime @default(now())
+    status              Status
+    read_interval       Int?
+    operational_range_min Float?
+    operational_range_max Float?
+    error_code          Int?
+    error_message       String?
+    comments            String?
+
+    // Relations
+    sala                Salas    @relation(fields: [sala_id], references: [sala_id])
+
+    HistoricoSensores   HistoricoSensores[]
+
+    @@map("sensores")
+}
+
+model Cidades {
+    cidade_id           Int      @id @default(autoincrement())
+    nome                String   @db.VarChar(255)
+    estado              String   @db.VarChar(2)
+
+    // Relations
+    Universidades       Universidades[]
+
+    @@map("cidades")
+}
+
+model Universidades {
+    universidade_id     Int      @id @default(autoincrement())
+    nome                String   @db.VarChar(255)
+    cidade_id           Int
+
+    // Relations
+    cidade              Cidades  @relation(fields: [cidade_id], references: [cidade_id])
+    Salas               Salas[]
+
+    @@map("universidades")
+}
+
+model Salas {
+    sala_id             Int      @id @default(autoincrement())
+    universidade_id     Int
+    nome                String   @db.VarChar(255)
+    capacidade          Int?
+    tipo                TipoSala
+
+    // Relations
+    universidade        Universidades @relation(fields: [universidade_id], references: [universidade_id])
+    Sensores            Sensores[]
+
+    @@map("salas")
+}
+
+model HistoricoSensores {
+    log_id              Int      @id @default(autoincrement())
+    sensor_id           Int
+    temperatura         Float?
+    umidade             Float?
+    pressao_atmosferica Float?
+    timestamp           DateTime @default(now())
+    unidade_temperatura String   @default("Celsius")   @db.VarChar(50)
+    unidade_umidade     String   @default("Percentual") @db.VarChar(50)
+    unidade_pressao     String   @default("hPa")       @db.VarChar(50)
+
+    // Relations
+    sensor              Sensores @relation(fields: [sensor_id], references: [sensor_id])
+
+    @@map("historico_sensores")
+}
+
+enum Status {
+    ativo
+    inativo
+}
+
+enum TipoSala {
+    sala
+    auditorio
+    laboratorio
+    outro
+}
+
