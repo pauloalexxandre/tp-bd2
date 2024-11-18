@@ -13,94 +13,113 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sensores {
-    sensor_id           Int      @id @default(autoincrement())
-    sala_id             Int
-    sensor_name         String   @db.VarChar(255)
-    sensor_type         String?  @db.VarChar(100)
-    sensor_model        String?  @db.VarChar(100)
-    current_value       Float?
-    unit_of_measure     String?  @db.VarChar(50)
-    timestamp           DateTime @default(now())
-    status              Status
-    read_interval       Int?
-    operational_range_min Float?
-    operational_range_max Float?
-    error_code          Int?
-    error_message       String?
-    comments            String?
+model Cidade {
+  cidade_id          Int      @id @default(autoincrement())
+  nome               String   @db.VarChar(191)
+  estado             String   @db.VarChar(191)
+  pais               String   @db.VarChar(191)
+  codigo_ibge        Int?     @unique
+  populacao          Int?
+  area_km2           Float?
+  densidade_demografica Float?
+  latitude           Float?
+  longitude          Float?
+  status             Int      @default(1)
+  historicosensor    HistoricoSensor[]
+  localidade         Localidade[]
 
-    // Relations
-    sala                Salas    @relation(fields: [sala_id], references: [sala_id])
-
-    HistoricoSensores   HistoricoSensores[]
-
-    @@map("sensores")
+  @@map("cidade")
 }
 
-model Cidades {
-    cidade_id           Int      @id @default(autoincrement())
-    nome                String   @db.VarChar(255)
-    estado              String   @db.VarChar(2)
+model HistoricoSensor {
+  log_id               Int       @id @default(autoincrement())
+  sensor_id            Int
+  temperatura          Float?
+  umidade              Float?
+  pressao_atmosferica  Float?
+  timestamp            DateTime  @default(dbgenerated("(CURRENT_TIMESTAMP)")) @db.Timestamp(3)
+  unidade_temperatura  String    @default("Celsius") @db.VarChar(191)
+  unidade_umidade      String    @default("Percentual") @db.VarChar(191)
+  unidade_pressao      String    @default("hPa") @db.VarChar(191)
+  sensor               Sensor   @relation(fields: [sensor_id], references: [sensor_id])
 
-    // Relations
-    Universidades       Universidades[]
-
-    @@map("cidades")
+  @@map("historicosensor")
+  Cidade Cidade[]
 }
 
-model Universidades {
-    universidade_id     Int      @id @default(autoincrement())
-    nome                String   @db.VarChar(255)
-    cidade_id           Int
+model Localidade {
+  localidade_id   Int      @id @default(autoincrement())
+  nome_localidade String   @db.VarChar(191)
+  cidade_id       Int
+  logradouro      String   @db.VarChar(255)
+  numero          String   @db.VarChar(10)
+  complemento     String?  @db.VarChar(255)
+  bairro          String   @db.VarChar(255)
+  cep             String   @db.VarChar(10)
+  cidade          Cidade   @relation(fields: [cidade_id], references: [cidade_id])
+  salas           Sala[]
 
-    // Relations
-    cidade              Cidades  @relation(fields: [cidade_id], references: [cidade_id])
-    Salas               Salas[]
-
-    @@map("universidades")
+  @@map("localidade")
 }
 
-model Salas {
-    sala_id             Int      @id @default(autoincrement())
-    universidade_id     Int
-    nome                String   @db.VarChar(255)
-    capacidade          Int?
-    tipo                TipoSala
+model Sala {
+  sala_id       Int       @id @default(autoincrement())
+  localidade_id Int
+  nome_sala     String    @db.VarChar(255)
+  tamanho       String?   @db.VarChar(191)
+  tipo_sala     String    @db.VarChar(100)
+  status        Int?      @default(1)
+  capacidade    Int?
+  equipamentos  String?   @db.VarChar(255)
+  area          Area?
+  categoria     Categoria?
+  localidade    Localidade @relation(fields: [localidade_id], references: [localidade_id])
+  sensores      Sensor[]
 
-    // Relations
-    universidade        Universidades @relation(fields: [universidade_id], references: [universidade_id])
-    Sensores            Sensores[]
-
-    @@map("salas")
+  @@map("sala")
 }
 
-model HistoricoSensores {
-    log_id              Int      @id @default(autoincrement())
-    sensor_id           Int
-    temperatura         Float?
-    umidade             Float?
-    pressao_atmosferica Float?
-    timestamp           DateTime @default(now())
-    unidade_temperatura String   @default("Celsius")   @db.VarChar(50)
-    unidade_umidade     String   @default("Percentual") @db.VarChar(50)
-    unidade_pressao     String   @default("hPa")       @db.VarChar(50)
-
-    // Relations
-    sensor              Sensores @relation(fields: [sensor_id], references: [sensor_id])
-
-    @@map("historico_sensores")
+enum Area {
+  Norte
+  Sul
+  Leste
+  Oeste
 }
 
-enum Status {
-    ativo
-    inativo
+enum Categoria {
+  ComplexoEsportivo
+  Edificacao
+  Hidrografia
+  Praca
+  ViaExterna
+  ViaInterna
+  Caminho
+  Estacionamento
 }
 
-enum TipoSala {
-    sala
-    auditorio
-    laboratorio
-    outro
+model Sensor {
+  sensor_id          Int      @id @default(autoincrement())
+  sala_id            Int
+  sensor_name        String   @db.VarChar(255)
+  sensor_type        String?  @db.VarChar(100)
+  sensor_model       String?  @db.VarChar(100)
+  current_value      Float?
+  unit_of_measure    String?  @db.VarChar(50)
+  timestamp          DateTime @default(dbgenerated("(CURRENT_TIMESTAMP)")) @db.Timestamp
+  status             SensorStatus
+  read_interval      Int?
+  operational_range_min Float?
+  operational_range_max Float?
+  error_code         Int?
+  error_message      String?
+  comments           String?
+  sala               Sala     @relation(fields: [sala_id], references: [sala_id])
+
+  @@map("sensores")
+  HistoricoSensor HistoricoSensor[]
 }
 
+enum SensorStatus {
+  ativo
+  inativo
+}

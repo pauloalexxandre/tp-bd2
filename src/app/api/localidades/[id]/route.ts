@@ -5,10 +5,10 @@ import { Context } from "vm"
 export const dynamic = 'force-static'
 
 export async function GET(context: Context) {
-    const sensorId = context.params.id 
-    if (!sensorId){
+    const localidadeId = context.params.id
+    if (!localidadeId){
         return NextResponse.json({message: "Não consta este Id"}, {status: 404})
     }
-    const sensor = await prisma.sensor.findFirst({where:{sensor_id: sensorId}})
-    return NextResponse.json(sensor)
+    const localidade = await prisma.localidade.findFirst({where:{localidade_id: localidadeId}})
+    return NextResponse.json(localidade)    
 }
