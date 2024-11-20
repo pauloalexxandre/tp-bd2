@@ -1,0 +1,26 @@
+[
+    {
+      "id": "4adc6275-9f08-4388-8775-39ea420daf7a",
+      "user": "admin",
+      "password": "Adm@123",
+      "role": "admin"
+    },
+    {
+      "id": "c2e9e55c-4e16-4105-8202-da4f9641e4c3",
+      "user": "admin2",
+      "password": "Adm2@123",
+      "role": "admin"
+    },
+    {
+      "id": "dce6fa88-3563-49e3-9203-1d2cc232f907",
+      "user": "paulo",
+      "password": "paulo@123",
+      "role": "admin"
+    },
+    {
+      "id": "6f6f8e82-07e7-49f4-b2a6-ca11fc17dfee",
+      "user": "ronaldo",
+      "password": "ronaldo@123",
+      "role": "admin"
+    }
+  ]

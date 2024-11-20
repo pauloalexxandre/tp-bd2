@@ -10,6 +10,6 @@ export async function GET(context: Context) {
     if (!cidadeId){
         return NextResponse.json({message: "Não consta este Id"}, {status: 404})
     }
-    const cidade = await prisma.cidades.findFirst({where:{cidade_id: cidadeId}})
+    const cidade = await prisma.cidade.findFirst({where:{cidade_id: cidadeId}})
     return NextResponse.json(cidade)
 }

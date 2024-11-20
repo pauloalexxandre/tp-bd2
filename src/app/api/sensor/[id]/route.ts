@@ -9,6 +9,6 @@ export async function GET(context: Context) {
     if (!sensorId){
         return NextResponse.json({message: "Não consta este Id"}, {status: 404})
     }
-    const sensor = await prisma.sensor.findFirst({where:{sensor_id: sensorId}})
+    const sensor = await prisma.sensores.findFirst({where:{sensor_id: sensorId}})
     return NextResponse.json(sensor)
 }

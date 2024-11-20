@@ -1,0 +1,112 @@
+[
+      {
+        "localidade_id":0,
+        "nome_localidade": "Campus Araraquara",
+        "cidade_id": 0,
+        "logradouro": "Avenida Dona Madalena",
+        "numero": "1500",
+        "complemento": "Bloco A",
+        "bairro": "Centro",
+        "cep": "14801-000"
+      },
+      {
+        "localidade_id":1,
+        "nome_localidade": "Campus Araçatuba",
+        "cidade_id": 1,
+        "logradouro": "Rua José Bonifácio",
+        "numero": "1000",
+        "complemento": "Bloco B",
+        "bairro": "Vila Mariana",
+        "cep": "16010-000"
+      },
+      {
+        "localidade_id":2,
+        "nome_localidade": "Campus Assis",
+        "cidade_id": 2,
+        "logradouro": "Rua José Alves do Nascimento",
+        "numero": "200",
+        "complemento": "",
+        "bairro": "Centro",
+        "cep": "19800-000"
+      },
+      {
+        "localidade_id":3,
+        "nome_localidade": "Campus Bauru",
+        "cidade_id": 3,
+        "logradouro": "Avenida Engenheiro Luiz Edmundo Cavanellas",
+        "numero": "200",
+        "complemento": "Bloco C",
+        "bairro": "Centro",
+        "cep": "17033-360"
+      },
+      {
+        "localidade_id":4,
+        "nome_localidade": "Campus Botucatu",
+        "cidade_id": 4,
+        "logradouro": "Avenida Camargo Pimentel",
+        "numero": "1500",
+        "complemento": "Bloco D",
+        "bairro": "Vila dos Lavradores",
+        "cep": "18603-000"
+      },
+      {
+        "localidade_id":5,
+        "nome_localidade": "Campus Franca",
+        "cidade_id": 5,
+        "logradouro": "Avenida Santa Maria",
+        "numero": "2500",
+        "complemento": "Bloco E",
+        "bairro": "Vila Nova",
+        "cep": "14400-000"
+      },
+      {
+        "localidade_id":6,
+        "nome_localidade": "Campus Guaratinguetá",
+        "cidade_id": 6,
+        "logradouro": "Rua Cel. João Cláudio",
+        "numero": "1200",
+        "complemento": "Bloco F",
+        "bairro": "Centro",
+        "cep": "12500-000"
+      },
+      {
+        "localidade_id":7,
+        "nome_localidade": "Campus Ilha Solteira",
+        "cidade_id": 7,
+        "logradouro": "Avenida Brasil",
+        "numero": "3500",
+        "complemento": "",
+        "bairro": "Centro",
+        "cep": "15385-000"
+      },
+      {
+        "localidade_id":8,
+        "nome_localidade": "Campus Jaboticabal",
+        "cidade_id": 8,
+        "logradouro": "Rua Doutor Orlando Ravacci",
+        "numero": "500",
+        "complemento": "",
+        "bairro": "Centro",
+        "cep": "14870-000"
+      },
+      {
+        "localidade_id":9,
+        "nome_localidade": "Campus Marília",
+        "cidade_id": 9,
+        "logradouro": "Avenida Hygino Muzzi Filho",
+        "numero": "1500",
+        "complemento": "Bloco G",
+        "bairro": "Vila Barbosa",
+        "cep": "17500-000"
+      },
+      {
+        "localidade_id":10 ,
+        "nome_localidade": "Campus Presidente Prudente",
+        "cidade_id": 10,
+        "logradouro": "Avenida dos Três Poderes",
+        "numero": "1000",
+        "complemento": "Bloco H",
+        "bairro": "Centro",
+        "cep": "19013-000"
+      }
+]
