@@ -80,7 +80,7 @@ export interface ICidade {
     error_message?: string  |null;
     comments?: string | null;
     sala?: ISala;
-    historicosensor?: IHistoricoSensor[];
+    HistoricoSensor?: IHistoricoSensor[];
   }
   
   // Enums

@@ -12,13 +12,13 @@ import { FloorPlan } from "./FloorPlan";
 
 export function SaoPauloMap(){
   const locations: ILocalidade[] = exampleLocalidades;
-  const cities: ICidade[] = exampleCidades;
   const rooms: ISala[] = exampleSalas;
-  
+  const [cities, setCities ] = useState<ICidade[]>([]);
   const [selectedCity, setSelectedCity] = useState<ICidade | null>(null);
   const [selectedLocations, setSelectedLocations] = useState<ILocalidade[] | null>(null);
   const [selectedRoomsModalOpen, setSelectedRoomsModalOpen] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<ILocalidade | null>(null);
+  const [isMapReady, setIsMapReady] = useState<boolean>(false);
   const fetchCoordinates = async (address: string) => {
     try {
       const encodedAddress = encodeURIComponent(address);
@@ -39,14 +39,22 @@ export function SaoPauloMap(){
   };
 
   const handleCloseSelectedRoomModal = () => { setSelectedRoomsModalOpen(false)}
-  const handleLocationClick = (location: ILocalidade) => {
-    setSelectedLocation(location); // Atualiza o estado com a localidade clicada
-    setSelectedRoomsModalOpen(true); // Abre o modal
-  };
+  const handleLocationClick = async (location: ILocalidade) => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/localidades/${location.localidade_id}`);
+        if (response) {
+          setSelectedLocation(response.data); 
+          setSelectedRoomsModalOpen(true);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar cidades:", error);
+      }
+    };
   // Função chamada ao clicar em uma cidade
   const handleCityClick = (city: ICidade) => {
     setSelectedCity(city);
   };
+
 
   // Estilo para o GeoJSON
   const cityStyle = (feature) => ({fillColor: (() => {
@@ -72,17 +80,29 @@ export function SaoPauloMap(){
           mapElement._leaflet_id = null; // Reseta o contêiner
         }
       };
+    }, [isMapReady]);
+    useEffect(() => {
+      const fetchCities = async () => {
+        try {
+          const response = await axios.get("http://localhost:3000/api/cidade");
+          if (response) {
+            setCities(response.data);
+            setIsMapReady(true);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar cidades:", error);
+        }
+      };
+  
+      fetchCities();
     }, []);
-
   useEffect(() => {
     // Função assíncrona para lidar com as coordenadas
     const fetchLocationsWithCoordinates = async () => {
       if (!selectedCity) return;
-    
-      const filteredLocations = locations.filter(
-        (loc) => loc.cidade_id === selectedCity.cidade_id
-      );
-    
+      try {
+      const response = await axios.get(`http://localhost:3000/api/cidade/${selectedCity.cidade_id}`);
+      const filteredLocations = response.data.localidade;
       const locationsWithCoordinates: ILocalidade[]= await Promise.all(
         filteredLocations.map(async (location) => {
           const coords = await fetchCoordinates(
@@ -95,7 +115,6 @@ export function SaoPauloMap(){
               lat:coords.lat,long:coords.long, salas: rooms.filter(room => room.localidade_id === location.localidade_id) // Adiciona as coordenadas
             };
           } else {
-            console.warn("Coordenadas não encontradas para:", location);
             return {
               ...location,
               coords: null, // Marca como inválido
@@ -109,12 +128,19 @@ export function SaoPauloMap(){
       );
     
       setSelectedLocations(validLocations);
+    }
+    catch(erro){
+      console.error("Erro ao buscar localidades com coordenadas:", error);
+    }
     };
   
     fetchLocationsWithCoordinates();
   }, [selectedCity, locations]);
   console.log(selectedLocation); 
   console.log(selectedRoomsModalOpen);
+  if (!isMapReady) {
+    return <div>Carregando...</div>;
+  }
   return (
     <>
     {selectedRoomsModalOpen && selectedLocation && <FloorPlan salas={selectedLocation.salas} localidadeId={selectedLocation.localidade_id} nomeLocalidade={selectedLocation.nome_localidade} isModalOpen={selectedRoomsModalOpen} handleCloseModal={handleCloseSelectedRoomModal }/> }

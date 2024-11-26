@@ -6,6 +6,7 @@ import sensores from '@/utils/sensores.json';
 import Image from 'next/image';
 import planta  from "@/assets/floorPlan.png";
 import { Cloud, CloudAlert, Footprints, History, Settings, Speaker, Sun, Thermometer, X } from 'lucide-react';
+import SensorHistoryModal from './HistorySensorModal';
 interface FloorPlanProps {
   salas: ISala[] | undefined;
   sensores?: ISensor[] | undefined; // Adiciona os sensores para mostrar na tooltip do mapa
@@ -30,12 +31,11 @@ export function FloorPlan({ salas, nomeLocalidade, localidadeId, isModalOpen, ha
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [selectedSensor, setSelectedSensor] = useState<ISensor | null>(null);
   const filteredSalas = salas?.filter(sala => sala.localidade_id === localidadeId );
-  const selectedSensores: ISensor[] = sensores;
-  
-  const handleSalaClick = (sala_id: number, event: React.MouseEvent<HTMLButtonElement>) => {
-    const sensoresDaSala = selectedSensores.filter(sensor => sensor.sala_id === sala_id);
-  
-    if (!sensoresDaSala.length) return;
+
+  const handleSalaClick = (sala: ISala, event: React.MouseEvent<HTMLButtonElement>) => {
+    const sensoresDaSala = sala.sensores;
+  console.log(sensoresDaSala);
+    if (!sensoresDaSala) return;
   
     // Calcula a posição do botão clicado
     const buttonRect = (event.target as HTMLButtonElement).getBoundingClientRect();
@@ -102,7 +102,7 @@ export function FloorPlan({ salas, nomeLocalidade, localidadeId, isModalOpen, ha
               <button 
                 className={`${areas[index]} flex flex-col items-center justify-center`}
                 key={sala.sala_id}
-                onClick={(e) => handleSalaClick(sala.sala_id,e)}
+                onClick={(e) => handleSalaClick(sala,e)}
               >
                 <div className=' text-black '>
                   <h3 className='font-bold'>{sala.nome_sala}</h3>
@@ -128,20 +128,10 @@ export function FloorPlan({ salas, nomeLocalidade, localidadeId, isModalOpen, ha
       </div>
        {/* Modal do Sensor */}
        {selectedSensor && (
-        <Modal
-          isOpen={!!selectedSensor}
-          onClose={handleCloseSensorModal}
-          title={`Histórico do Sensor: ${selectedSensor.sensor_name}`}
-        >
-          <div className="p-4">
-            {selectedSensor.historicosensor?.map((historico, index) => (
-              <div key={index} className="flex flex-col gap-1 border-b py-2">
-                <span>Data: {historico.timestamp.toString()}</span>
-                <span>Valor: {historico.sensor_id}</span>
-              </div>
-            ))}
-          </div>
-        </Modal>
+        <SensorHistoryModal
+        selectedSensor={selectedSensor}
+        onClose={handleCloseSensorModal}
+      />
       )}
     </Modal>
   );
